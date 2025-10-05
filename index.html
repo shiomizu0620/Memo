@@ -2,16 +2,24 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>メモアプリ</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>メモアプリ</h1>
+  <div class="container">
+    <h1>メモアプリ</h1>
 
-  <textarea id="memoInput" placeholder="ここにメモを書いてください"></textarea>
-  <button id="saveBtn">保存</button>
+    <!-- メモを入力するところ -->
+    <div class="input-area">
+      <input type="text" id="memoTitle" placeholder="タイトル">
+      <textarea id="memoContent" placeholder="メモの内容"></textarea>
+      <button id="saveButton">保存する</button>
+    </div>
 
-  <ul id="memoList"></ul>
+    <!-- メモが表示されるところ -->
+    <div id="memoList"></div>
+  </div>
 
   <script src="script.js"></script>
 </body>

@@ -1,29 +1,141 @@
-/* style.css */
+/* ========================================
+   全体の設定
+   ======================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 30px;
-  }
-  
-  textarea {
-    width: 300px;
-    height: 100px;
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  button {
-    margin-bottom: 20px;
-  }
-  
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  li {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+/* ========================================
+   メインコンテナ
+   ======================================== */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+/* ========================================
+   入力エリア
+   ======================================== */
+.input-area {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+#memoTitle {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#memoContent {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  min-height: 100px;
+  resize: vertical;
+  margin-bottom: 10px;
+  font-family: Arial, sans-serif;
+}
+
+#saveButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#saveButton:hover {
+  background-color: #45a049;
+}
+
+/* ========================================
+   メモ一覧
+   ======================================== */
+.memo-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  border-left: 5px solid #4CAF50;
+}
+
+.memo-card h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.memo-card p {
+  color: #666;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.delete-button {
+  padding: 8px 15px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #da190b;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 40px;
+}
+
+/* ========================================
+   スマホ対応
+   ======================================== */
+@media (max-width: 600px) {
+  body {
     padding: 10px;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-    background-color: #f9f9f9;
   }
-  
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .input-area {
+    padding: 15px;
+  }
+}
