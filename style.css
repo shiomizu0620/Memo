@@ -78,6 +78,7 @@ h1 {
    メモ一覧
    ======================================== */
 .memo-card {
+  position: relative; /* ★ この行を追加！ */
   background-color: white;
   padding: 15px;
   border-radius: 10px;
@@ -277,4 +278,59 @@ h1 {
   .history-page .container {
     padding: 15px;
   }
+}
+/* ========================================
+   ヒント画像用のスタイル
+   ======================================== */
+.hint-image {
+  position: absolute; /* 親要素(.memo-card)を基準に配置 */
+  bottom: 8px;        /* 下から8px */
+  right: 8px;         /* 右から8px */
+  width: 35px;        /* 画像の幅 */
+  height: 35px;       /* 画像の高さ */
+  opacity: 0.7;       /* 少しだけ半透明にする */
+  object-fit: contain; /* 画像が潰れないように調整 */
+}
+
+/* ========================================
+   画像と日付の重なりを修正
+   ======================================== */
+.memo-card .date {
+  padding-right: 45px; /* 画像が入るスペースを確保 */
+  box-sizing: border-box; /* パディングを含めて幅を計算 */
+}
+/* ========================================
+   上部コントロールボタンのスタイル
+   ======================================== */
+.top-controls {
+  display: flex;
+  justify-content: space-between; /* 左右に配置 */
+  align-items: center;
+  margin-bottom: 25px; /* 下に余白を作る */
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd; /* 区切り線 */
+}
+
+/* 一括削除ボタンのスタイル（修正） */
+.delete-all-button {
+  /* display: block; と margin を削除 */
+  width: auto; /* 幅を自動調整 */
+  max-width: none;
+  padding: 10px 20px; /* 少し小さく調整 */
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-all-button:hover {
+  background-color: #da190b;
+}
+
+/* 戻るリンクのスタイル調整 */
+.history-page .history-link {
+  font-size: 14px;
 }
