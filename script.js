@@ -20,34 +20,26 @@ loadMemos();
 showMemos();
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//  4. 保存ボタンを押したときの処理（ランダム変換機能付き）
+//  4. 保存ボタンを押したときの処理（画像ヒント機能付き）
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 saveButton.addEventListener('click', function() {
 
-  // --- 変換ルールのリスト ---
+  // --- 変換ルールのリスト（画像パスを追加） ---
   const transformations = [
-    { name: 'あ→る', transform: (text) => text.replaceAll('あ', 'る') },
-    { name: 'たぬき', transform: (text) => text.replaceAll('た', '') },
-    { name: 'い抜き', transform: (text) => text.replaceAll('い', '') },
-    { name: '母音抜き', transform: (text) => text.replace(/[あいうえお]/g, '') },
-    // { name: '何もしない', transform: (text) => text }, // 変換しない選択肢もアリ
+    { name: 'あ→る',   transform: (text) => text.replaceAll('あ', 'る'), image: 'images/agemono.png' },
+    { name: 'たぬき',   transform: (text) => text.replaceAll('た', ''),   image: 'images/tanuki.png' },
+    
   ];
 
   // --- ランダムに1つの変換ルールを選ぶ ---
   const randomIndex = Math.floor(Math.random() * transformations.length);
   const selectedTransformation = transformations[randomIndex];
 
+  // --- ユーザーの入力を取得 & 変換 ---
+  let title = selectedTransformation.transform(memoTitle.value);
+  let content = selectedTransformation.transform(memoContent.value);
 
-  // --- ユーザーの入力を取得 ---
-  let title = memoTitle.value;
-  let content = memoContent.value;
-
-  // --- 選ばれたルールで文字を変換 ---
-  title = selectedTransformation.transform(title);
-  content = selectedTransformation.transform(content);
-
-
-  // --- 以下、保存処理 (変更なし) ---
+  // --- 以下、保存処理 ---
   if (content === '') {
     alert('メモの内容を入力してください');
     return;
@@ -55,9 +47,10 @@ saveButton.addEventListener('click', function() {
 
   const newMemo = {
     id: Date.now(),
-    title: (title || '無題') + `（ルール: ${selectedTransformation.name}）`, // ★どのルールが適用されたかタイトルに追加
+    title: title || '無題', // テキストのヒントは削除
     content: content,
-    date: new Date().toLocaleString('ja-JP')
+    date: new Date().toLocaleString('ja-JP'),
+    image: selectedTransformation.image // ★画像パスをメモに保存
   };
 
   memos.unshift(newMemo);
@@ -66,6 +59,21 @@ saveButton.addEventListener('click', function() {
   memoContent.value = '';
   showMemos();
 });
+
+// ========================================
+//  Enterキーで保存する機能
+// ========================================
+memoContent.addEventListener('keydown', function(event) {
+  // 押されたキーがEnterキーで、Shiftキーが押されていない場合
+  if (event.key === 'Enter' && !event.shiftKey) {
+    // デフォルトのEnterキーの動作（改行）をキャンセル
+    event.preventDefault();
+
+    // 保存ボタンのクリックイベントを強制的に発生させる
+    saveButton.click();
+  }
+});
+
 // ========================================
 // 5. メモを画面に表示する関数
 // ========================================
@@ -108,6 +116,15 @@ function showMemos() {
     deleteButton.addEventListener('click', function() {
       deleteMemo(memo.id);
     });
+
+    // ★★★★★ ここから3行追加 ★★★★★
+    if (memo.image) { // もし画像パスがあれば
+      const hintImage = document.createElement('img');
+      hintImage.src = memo.image;
+      hintImage.className = 'hint-image';
+      card.appendChild(hintImage);
+    }
+    // ★★★★★ ここまで追加 ★★★★★
 
     // カードに要素を追加
     card.appendChild(titleElement);

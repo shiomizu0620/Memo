@@ -17,7 +17,7 @@ loadMemos();
 showMemos(); // ここでは全てのメモを表示する
 
 // ========================================
-// 5. メモを画面に表示する関数（script.jsからコピー）
+// 5. メモを画面に表示する関数
 // ========================================
 function showMemos() {
   memoList.innerHTML = '';
@@ -49,11 +49,21 @@ function showMemos() {
       deleteMemo(memo.id);
     });
 
+    // ★★★★★ ここから追加 ★★★★★
+    if (memo.image) { // もしメモデータに画像パスがあれば
+      const hintImage = document.createElement('img'); // img要素を作る
+      hintImage.src = memo.image;                      // 画像の場所を指定
+      hintImage.className = 'hint-image';              // CSSを適用
+      card.appendChild(hintImage);                     // カードに追加
+    }
+
+    // カードに要素を追加
     card.appendChild(titleElement);
     card.appendChild(contentElement);
     card.appendChild(dateElement);
     card.appendChild(deleteButton);
 
+    // リストに追加
     memoList.appendChild(card);
   });
 }
@@ -88,3 +98,21 @@ function loadMemos() {
     memos = JSON.parse(saved);
   }
 }
+// ========================================
+// 9. 全てのメモを削除する機能
+// ========================================
+const deleteAllButton = document.getElementById('deleteAllButton');
+
+deleteAllButton.addEventListener('click', function() {
+  // ユーザーに最終確認
+  if (confirm('本当にすべてのメモを削除しますか？この操作は元に戻せません。')) {
+    // メモの配列を空にする
+    memos = [];
+
+    // ローカルストレージを更新（空の配列を保存）
+    saveMemos();
+
+    // 画面を更新
+    showMemos();
+  }
+});
