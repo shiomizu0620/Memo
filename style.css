@@ -264,7 +264,7 @@ h1 {
 /* スマホ対応 */
 @media (max-width: 600px) {
   .history-page #memoList {
-    gap: 15px;
+    gap: 16px;
   }
   .history-page .memo-card {
     width: 140px;
