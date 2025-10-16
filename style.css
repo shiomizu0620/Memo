@@ -157,6 +157,7 @@ h1 {
 
 /* ボード全体をノート風にする */
 .history-page .container {
+  max-width: 1000px; /* ★この行を追加して横幅を広げる */
   background-color: #ffffff;
   border: 2px solid #333;
   border-radius: 5px;
@@ -264,7 +265,7 @@ h1 {
 /* スマホ対応 */
 @media (max-width: 600px) {
   .history-page #memoList {
-    gap: 16px;
+    gap: 15px;
   }
   .history-page .memo-card {
     width: 140px;
