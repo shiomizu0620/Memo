@@ -30,10 +30,18 @@ saveButton.addEventListener('click', function() {
     { name: 'たぬき',   transform: (text) => text.replaceAll('た', ''),   image: 'images/tanuki.png' },
   ];
 
-  // ★ 1. まずユーザーの入力を取得する
+  // ★ 1. まず元の入力を取得
   const originalTitle = memoTitle.value;
   const originalContent = memoContent.value;
-  const combinedInput = originalTitle + originalContent; // タイトルと内容を結合してチェックしやすくする
+
+  // ★ 2. 元の入力が空の場合だけ、ここで処理を止める
+  if (originalContent === '') {
+    alert('メモの内容を入力してください');
+    return;
+  }
+
+  // ★ タイトルと内容を結合した変数（これが抜けていました）
+  const combinedInput = originalTitle + originalContent;
 
   // ★ 2. 入力された文字に「適用可能」なルールだけを絞り込む
   const applicableTransformations = transformations.filter(rule => {
@@ -59,11 +67,6 @@ saveButton.addEventListener('click', function() {
   // ★ 4. 選ばれたルールで文字を変換
   const title = selectedTransformation.transform(originalTitle);
   const content = selectedTransformation.transform(originalContent);
-  // --- 以下、保存処理 ---
-  if (content === '') {
-    alert('メモの内容を入力してください');
-    return;
-  }
 
   // ★★★★★ ここからが重要 ★★★★★
   const newMemo = {
@@ -92,6 +95,20 @@ memoContent.addEventListener('keydown', function(event) {
   // 押されたキーがEnterキーで、Shiftキーが押されていない場合
   if (event.key === 'Enter' && !event.shiftKey) {
     // デフォルトのEnterキーの動作（改行）をキャンセル
+    event.preventDefault();
+
+    // 保存ボタンのクリックイベントを強制的に発生させる
+    saveButton.click();
+  }
+});
+
+// ========================================
+//  タイトル欄でEnterキーで保存する機能
+// ========================================
+memoTitle.addEventListener('keydown', function(event) {
+  // 押されたキーがEnterキーの場合
+  if (event.key === 'Enter') {
+    // デフォルトのEnterキーの動作（フォーム送信など）をキャンセル
     event.preventDefault();
 
     // 保存ボタンのクリックイベントを強制的に発生させる
@@ -143,14 +160,14 @@ function showMemos() {
     });
 
     // ★ヒント画像の変数をここで宣言しておく
-    let hintImage = null; 
+    let hintImage = null;
     if (memo.image) {
       hintImage = document.createElement('img'); // ★ここで代入
       hintImage.src = memo.image;
       hintImage.className = 'hint-image';
       card.appendChild(hintImage);
     }
-    
+
     // ★「変換なし」の場合はクイズエリアを作らない
     if (memo.ruleName !== '変換なし') {
       const quizArea = document.createElement('div');
@@ -162,6 +179,16 @@ function showMemos() {
       checkButton.textContent = '答え合わせ';
 
       checkButton.addEventListener('click', function() {
+        const userAnswer = answerInput.value;
+
+        // ★ひらがな以外の文字が含まれているかチェックする正規表現
+        const hiraganaRegex = /^[ぁ-んー]+$/;
+
+        if (!hiraganaRegex.test(userAnswer) && userAnswer !== "") {
+          alert('答えはひらがなで書いてね');
+          return; // ここで処理を中断
+        }
+
         if (answerInput.value === memo.ruleName) {
           // ★★★ 正解したときの処理 ★★★
           // 1. 元の文章に戻す
