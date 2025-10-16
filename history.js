@@ -50,7 +50,7 @@ function showMemos() {
     });
 
     // ★ヒント画像の変数をここで宣言しておく
-    let hintImage = null; 
+    let hintImage = null;
     if (memo.image) {
       hintImage = document.createElement('img'); // ★ここで代入
       hintImage.src = memo.image;

@@ -334,3 +334,19 @@ h1 {
 .history-page .history-link {
   font-size: 14px;
 }
+/* ========================================
+   クイズエリアと削除ボタンの重なり修正
+   ======================================== */
+
+/* 履歴ページのカードの高さを可変にする */
+.history-page .memo-card {
+  height: auto;      /* 高さを自動に */
+  min-height: 180px; /* 最低限の高さは維持 */
+}
+
+/* クイズエリアの上に余白を確保する */
+.quiz-area {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed #ccc; /* 日付との間に区切り線を入れる */
+}
