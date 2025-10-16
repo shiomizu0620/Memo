@@ -139,3 +139,142 @@ h1 {
     padding: 15px;
   }
 }
+
+.history-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #333;
+  text-decoration: none;
+}
+.history-link:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   履歴ページ専用スタイル（修正版：ドット方眼ノート風）
+   ======================================== */
+
+/* ボード全体をノート風にする */
+.history-page .container {
+  max-width: 1000px; /* ★この行を追加して横幅を広げる */
+  background-color: #ffffff;
+  border: 2px solid #333;
+  border-radius: 5px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+  /* --- ▼ ここでドット方眼の背景を作成 --- */
+  background-image: radial-gradient(#d0d0d0 1px, transparent 1px);
+  background-size: 20px 20px;
+  /* --- ▲ ここまで --- */
+}
+
+/* 履歴ページのタイトル色を黒に戻す */
+.history-page h1 {
+  color: #333;
+  margin-bottom: 25px;
+}
+
+/* リンクの色を調整 */
+.history-page .history-link {
+  color: #555;
+}
+.history-page .history-link:hover {
+  color: #000;
+}
+
+/* メモ一覧のコンテナ（ボードの中身） */
+.history-page #memoList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  min-height: 200px;
+  padding: 10px 0;
+}
+
+/* --- (以下、付箋などのスタイルは変更ありません) --- */
+
+/* 付箋風のメモカード */
+.history-page .memo-card {
+  width: 160px;
+  height: 180px;
+  background-color: #fffacd;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform: rotate(calc(-2deg + var(--rotation) * 1deg));
+  --rotation: 0;
+}
+
+/* 付箋のタイトル */
+.history-page .memo-card h3 {
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: 5px;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 付箋の内容 */
+.history-page .memo-card p {
+  font-size: 0.9em;
+  color: #555;
+  line-height: 1.4;
+  flex-grow: 1;
+  margin-bottom: 5px;
+  overflow-y: auto;
+}
+
+/* 日付の調整 */
+.history-page .memo-card .date {
+  font-size: 0.75em;
+  color: #888;
+  text-align: right;
+  margin-top: auto;
+}
+
+/* 削除ボタンの調整 */
+.history-page .memo-card .delete-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  padding: 3px 6px;
+  font-size: 0.7em;
+  background-color: rgba(244, 67, 54, 0.8);
+}
+.history-page .memo-card .delete-button:hover {
+  background-color: #f44336;
+}
+
+/* メモがない時の表示色を調整 */
+.history-page .empty {
+  color: #666;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+  .history-page #memoList {
+    gap: 15px;
+  }
+  .history-page .memo-card {
+    width: 140px;
+    height: 160px;
+  }
+  .history-page h1 {
+    font-size: 20px;
+  }
+  .history-page .container {
+    padding: 15px;
+  }
+}

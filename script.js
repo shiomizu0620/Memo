@@ -19,42 +19,53 @@ loadMemos();
 // メモを画面に表示する
 showMemos();
 
-// ========================================
-// 4. 保存ボタンを押したときの処理
-// ========================================
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+//  4. 保存ボタンを押したときの処理（ランダム変換機能付き）
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 saveButton.addEventListener('click', function() {
-  // 入力された値を取得
-  const title = memoTitle.value;
-  const content = memoContent.value;
 
-  // 内容が空だったら保存しない
+  // --- 変換ルールのリスト ---
+  const transformations = [
+    { name: 'あ→る', transform: (text) => text.replaceAll('あ', 'る') },
+    { name: 'たぬき', transform: (text) => text.replaceAll('た', '') },
+    { name: 'い抜き', transform: (text) => text.replaceAll('い', '') },
+    { name: '母音抜き', transform: (text) => text.replace(/[あいうえお]/g, '') },
+    // { name: '何もしない', transform: (text) => text }, // 変換しない選択肢もアリ
+  ];
+
+  // --- ランダムに1つの変換ルールを選ぶ ---
+  const randomIndex = Math.floor(Math.random() * transformations.length);
+  const selectedTransformation = transformations[randomIndex];
+
+
+  // --- ユーザーの入力を取得 ---
+  let title = memoTitle.value;
+  let content = memoContent.value;
+
+  // --- 選ばれたルールで文字を変換 ---
+  title = selectedTransformation.transform(title);
+  content = selectedTransformation.transform(content);
+
+
+  // --- 以下、保存処理 (変更なし) ---
   if (content === '') {
     alert('メモの内容を入力してください');
     return;
   }
 
-  // 新しいメモを作る
   const newMemo = {
-    id: Date.now(), // IDは現在時刻を使う
-    title: title || '無題', // タイトルが空なら「無題」にする
+    id: Date.now(),
+    title: (title || '無題') + `（ルール: ${selectedTransformation.name}）`, // ★どのルールが適用されたかタイトルに追加
     content: content,
-    date: new Date().toLocaleString('ja-JP') // 日付と時刻
+    date: new Date().toLocaleString('ja-JP')
   };
 
-  // メモを配列の先頭に追加
   memos.unshift(newMemo);
-
-  // ローカルストレージに保存
   saveMemos();
-
-  // 入力欄を空にする
   memoTitle.value = '';
   memoContent.value = '';
-
-  // 画面を更新
   showMemos();
 });
-
 // ========================================
 // 5. メモを画面に表示する関数
 // ========================================
@@ -68,8 +79,11 @@ function showMemos() {
     return;
   }
 
-  // メモを1つずつ表示
-  memos.forEach(function(memo) {
+// ↓ ここを修正！ slice(0, 3) で配列の先頭から3つだけ取得する
+  const recentMemos = memos.slice(0, 3);
+
+  // 3つのメモを1つずつ表示
+  recentMemos.forEach(function(memo) {
     // メモカードを作る
     const card = document.createElement('div');
     card.className = 'memo-card';
