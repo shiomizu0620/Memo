@@ -26,10 +26,8 @@ saveButton.addEventListener('click', function() {
 
   // --- 変換ルールのリスト（変更なし） ---
   const transformations = [
-    { name: 'あ→る',   transform: (text) => text.replaceAll('あ', 'る'), image: 'images/agemono.png' },
+    { name: 'あがる',   transform: (text) => text.replaceAll('あ', 'る'), image: 'images/agemono.png' },
     { name: 'たぬき',   transform: (text) => text.replaceAll('た', ''),   image: 'images/tanuki.png' },
-    { name: 'い抜き',   transform: (text) => text.replaceAll('い', ''),   image: 'images/no-i.png' },
-    { name: '母音抜き', transform: (text) => text.replace(/[あいうえお]/g, ''), image: 'images/vowel.png' }
   ];
 
   // ★ 1. まずユーザーの入力を取得する
@@ -65,14 +63,16 @@ saveButton.addEventListener('click', function() {
   if (content === '') {
     alert('メモの内容を入力してください');
     return;
-  } 
+  }
 
   // ★★★★★ ここからが重要 ★★★★★
   const newMemo = {
     id: Date.now(),
     title: title || '無題',
     content: content,
+    originalTitle: originalTitle,     // ★変換前のタイトルを保存
     originalContent: originalContent, // ★変換前の内容を保存
+    ruleName: selectedTransformation.name,
     date: new Date().toLocaleString('ja-JP'),
     image: selectedTransformation.image
   };
@@ -142,45 +142,53 @@ function showMemos() {
       deleteMemo(memo.id);
     });
 
-    // ★★★★★ ここから3行追加 ★★★★★
-    if (memo.image) { // もし画像パスがあれば
-      const hintImage = document.createElement('img');
+    // ★ヒント画像の変数をここで宣言しておく
+    let hintImage = null; 
+    if (memo.image) {
+      hintImage = document.createElement('img'); // ★ここで代入
       hintImage.src = memo.image;
       hintImage.className = 'hint-image';
       card.appendChild(hintImage);
     }
-    // ★★★★★ ここまで追加 ★★★★★
+    
+    // ★「変換なし」の場合はクイズエリアを作らない
+    if (memo.ruleName !== '変換なし') {
+      const quizArea = document.createElement('div');
+      quizArea.className = 'quiz-area';
+      const answerInput = document.createElement('input');
+      answerInput.type = 'text';
+      answerInput.placeholder = '適用されたルールは？';
+      const checkButton = document.createElement('button');
+      checkButton.textContent = '答え合わせ';
 
-    // ★★★★★ ここからクイズ機能を追加 ★★★★★
-    const quizArea = document.createElement('div');
-    quizArea.className = 'quiz-area';
+      checkButton.addEventListener('click', function() {
+        if (answerInput.value === memo.ruleName) {
+          // ★★★ 正解したときの処理 ★★★
+          // 1. 元の文章に戻す
+          titleElement.textContent = memo.originalTitle || '無題';
+          contentElement.textContent = memo.originalContent;
 
-    const answerInput = document.createElement('input');
-    answerInput.type = 'text';
-    answerInput.placeholder = '元の言葉は？';
+          // 2. クイズエリアとヒント画像を消す
+          card.removeChild(quizArea);
+          if (hintImage) { // hintImageが存在すれば消す
+            card.removeChild(hintImage);
+          }
+        } else {
+          // ★ 不正解だったときの処理
+          alert('残念！正解は「' + memo.ruleName + '」でした。');
+        }
+      });
 
-    const checkButton = document.createElement('button');
-    checkButton.textContent = '答え合わせ';
-    checkButton.addEventListener('click', function() {
-      if (answerInput.value === memo.originalContent) {
-        alert('正解です！🎉');
-      } else {
-        alert('残念！正解は「' + memo.originalContent + '」でした。');
-      }
-    });
+      quizArea.appendChild(answerInput);
+      quizArea.appendChild(checkButton);
+      card.appendChild(quizArea); // カードにクイズエリアを追加
+    }
 
-    quizArea.appendChild(answerInput);
-    quizArea.appendChild(checkButton);
-    // ★★★★★ ここまで ★★★★★
-
-    // カードに要素を追加
     card.appendChild(titleElement);
     card.appendChild(contentElement);
     card.appendChild(dateElement);
-    card.appendChild(quizArea); // ★クイズエリアをカードに追加
     card.appendChild(deleteButton);
 
-    // リストに追加
     memoList.appendChild(card);
   });
 }
