@@ -26,10 +26,17 @@ saveButton.addEventListener('click', function() {
 
   // --- 変換ルールのリスト（変更なし） ---
   const transformations = [
-    { name: 'あ→る',   transform: (text) => text.replaceAll('あ', 'る'), image: 'images/agemono.png' },
+    { name: 'あがる',   transform: (text) => text.replaceAll('あ', 'る'), image: 'images/agemono.png' },
     { name: 'たぬき',   transform: (text) => text.replaceAll('た', ''),   image: 'images/tanuki.png' },
-    { name: 'い抜き',   transform: (text) => text.replaceAll('い', ''),   image: 'images/no-i.png' },
-    { name: '母音抜き', transform: (text) => text.replace(/[あいうえお]/g, ''), image: 'images/vowel.png' }
+    { name: 'こけし',   transform: (text) => text.replaceAll('こ', ''),   image: 'images/kokesi.png' },
+    { name: 'わたがし',   transform: (text) => text.replaceAll('わ', 'し').replaceAll('た', 'し'),   image: 'images/watagasi.png' },
+    { name: 'けしごむ',   transform: (text) => text.replaceAll('ご', '').replaceAll('む', ''),   image: 'images/kesigomu.png' },
+    { name: 'だがし',   transform: (text) => text.replaceAll('だ', 'し'),   image: 'images/dagasi.png' },
+    { name: 'ひがし',   transform: (text) => text.replaceAll('ひ', 'し'),   image: 'images/higasi.png' },
+    { name: 'ひけし',   transform: (text) => text.replaceAll('ひ', ''),   image: 'images/hikesi.png' },
+    { name: 'さがん',   transform: (text) => text.replaceAll('さ', 'ん'),   image: 'images/sagan.png' },
+
+
   ];
 
   // ★ 1. まずユーザーの入力を取得する

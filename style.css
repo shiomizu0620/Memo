@@ -292,6 +292,23 @@ h1 {
   object-fit: contain; /* 画像が潰れないように調整 */
 }
 
+/* 入力画面（history-page クラスがないページ）のときだけヒント画像を大きくする */
+body:not(.history-page) .hint-image {
+  width: 100px;
+  height: 100px;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0.95;
+}
+
+/* スマホ向けにサイズを少し小さくする */
+@media (max-width: 600px) {
+  body:not(.history-page) .hint-image {
+    width: 48px;
+    height: 48px;
+  }
+}
+
 /* ========================================
    画像と日付の重なりを修正
    ======================================== */
