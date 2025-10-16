@@ -1,11 +1,12 @@
-// history.js 
+// history.js (コンフリクト解消版)
+
 
 // ========================================
 // 1. HTML要素を取得する
 // ========================================
 const memoList = document.getElementById('memoList');
-// ★ body要素を取得（ポップアップ表示に必要）
-const body = document.querySelector('body'); 
+const body = document.querySelector('body');
+const deleteAllButton = document.getElementById('deleteAllButton');
 
 // ========================================
 // 2. メモを保存する配列
@@ -16,7 +17,38 @@ let memos = [];
 // 3. ページを開いたときに実行する
 // ========================================
 loadMemos();
-showMemos(); // ここでは全てのメモを表示する
+showMemos();
+
+// ========================================
+// 4. 正解時のポップアップ表示関数
+// ========================================
+function showCorrectPopup() {
+  const popup = document.createElement('div');
+  popup.textContent = '🎉大正解！🎉';
+  popup.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background-color: rgba(40, 167, 69, 0.95); color: white;
+    padding: 30px 60px; border-radius: 10px; font-size: 3em;
+    font-weight: bold; z-index: 1000; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 1.8s forwards;
+  `;
+  body.appendChild(popup);
+  setTimeout(() => { popup.remove(); }, 1800);
+
+  if (!document.getElementById('popup-style')) {
+    const style = document.createElement('style');
+    style.id = 'popup-style';
+    style.textContent = `
+      @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
 
 // ========================================
 // 4. ★ 正解時のポップアップ表示関数
@@ -270,7 +302,7 @@ function showMemos() {
 }
 
 // ========================================
-// 6. メモを削除する関数（script.jsからコピー）
+// 6. メモを削除する関数
 // ========================================
 // ★ 削除確認の引数を追加
 function deleteMemo(id, requireConfirm = true) { 
@@ -285,14 +317,14 @@ function deleteMemo(id, requireConfirm = true) {
 }
 
 // ========================================
-// 7. メモをローカルストレージに保存する関数（script.jsからコピー）
+// 7. メモをローカルストレージに保存する関数
 // ========================================
 function saveMemos() {
   localStorage.setItem('memos', JSON.stringify(memos));
 }
 
 // ========================================
-// 8. メモをローカルストレージから読み込む関数（script.jsからコピー）
+// 8. メモをローカルストレージから読み込む関数
 // ========================================
 function loadMemos() {
   const saved = localStorage.getItem('memos');
@@ -306,11 +338,10 @@ function loadMemos() {
     });
   }
 }
+
 // ========================================
 // 9. 全てのメモを削除する機能
 // ========================================
-const deleteAllButton = document.getElementById('deleteAllButton');
-
 deleteAllButton.addEventListener('click', function() {
   // ユーザーに最終確認
   if (confirm('本当にすべてのメモを削除しますか？この操作は元に戻せません。')) {
