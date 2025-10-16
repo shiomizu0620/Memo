@@ -57,10 +57,33 @@ function showMemos() {
       card.appendChild(hintImage);                     // カードに追加
     }
 
+    // ★★★★★ ここからクイズ機能を追加 ★★★★★
+    const quizArea = document.createElement('div');
+    quizArea.className = 'quiz-area';
+
+    const answerInput = document.createElement('input');
+    answerInput.type = 'text';
+    answerInput.placeholder = '元の言葉は？';
+
+    const checkButton = document.createElement('button');
+    checkButton.textContent = '答え合わせ';
+    checkButton.addEventListener('click', function() {
+      if (answerInput.value === memo.originalContent) {
+        alert('正解です！🎉');
+      } else {
+        alert('残念！正解は「' + memo.originalContent + '」でした。');
+      }
+    });
+
+    quizArea.appendChild(answerInput);
+    quizArea.appendChild(checkButton);
+    // ★★★★★ ここまで ★★★★★
+
     // カードに要素を追加
     card.appendChild(titleElement);
     card.appendChild(contentElement);
     card.appendChild(dateElement);
+    card.appendChild(quizArea); // ★クイズエリアをカードに追加
     card.appendChild(deleteButton);
 
     // リストに追加
