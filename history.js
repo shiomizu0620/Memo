@@ -49,44 +49,53 @@ function showMemos() {
       deleteMemo(memo.id);
     });
 
-    // ★★★★★ ここから追加 ★★★★★
-    if (memo.image) { // もしメモデータに画像パスがあれば
-      const hintImage = document.createElement('img'); // img要素を作る
-      hintImage.src = memo.image;                      // 画像の場所を指定
-      hintImage.className = 'hint-image';              // CSSを適用
-      card.appendChild(hintImage);                     // カードに追加
+    // ★ヒント画像の変数をここで宣言しておく
+    let hintImage = null; 
+    if (memo.image) {
+      hintImage = document.createElement('img'); // ★ここで代入
+      hintImage.src = memo.image;
+      hintImage.className = 'hint-image';
+      card.appendChild(hintImage);
     }
 
-    // ★★★★★ ここからクイズ機能を追加 ★★★★★
-    const quizArea = document.createElement('div');
-    quizArea.className = 'quiz-area';
+    // ★「変換なし」の場合はクイズエリアを作らない
+    if (memo.ruleName !== '変換なし') {
+      const quizArea = document.createElement('div');
+      quizArea.className = 'quiz-area';
+      const answerInput = document.createElement('input');
+      answerInput.type = 'text';
+      answerInput.placeholder = '適用されたルールは？';
+      const checkButton = document.createElement('button');
+      checkButton.textContent = '答え合わせ';
 
-    const answerInput = document.createElement('input');
-    answerInput.type = 'text';
-    answerInput.placeholder = '元の言葉は？';
+      checkButton.addEventListener('click', function() {
+        if (answerInput.value === memo.ruleName) {
+          // ★★★ 正解したときの処理 ★★★
+          // 1. 元の文章に戻す
+          titleElement.textContent = memo.originalTitle || '無題';
+          contentElement.textContent = memo.originalContent;
 
-    const checkButton = document.createElement('button');
-    checkButton.textContent = '答え合わせ';
-    checkButton.addEventListener('click', function() {
-      if (answerInput.value === memo.originalContent) {
-        alert('正解です！🎉');
-      } else {
-        alert('残念！正解は「' + memo.originalContent + '」でした。');
-      }
-    });
+          // 2. クイズエリアとヒント画像を消す
+          card.removeChild(quizArea);
+          if (hintImage) { // hintImageが存在すれば消す
+            card.removeChild(hintImage);
+          }
+        } else {
+          // ★ 不正解だったときの処理
+          alert('残念！正解は「' + memo.ruleName + '」でした。');
+        }
+      });
 
-    quizArea.appendChild(answerInput);
-    quizArea.appendChild(checkButton);
-    // ★★★★★ ここまで ★★★★★
+      quizArea.appendChild(answerInput);
+      quizArea.appendChild(checkButton);
+      card.appendChild(quizArea); // カードにクイズエリアを追加
+    }
 
-    // カードに要素を追加
     card.appendChild(titleElement);
     card.appendChild(contentElement);
     card.appendChild(dateElement);
-    card.appendChild(quizArea); // ★クイズエリアをカードに追加
     card.appendChild(deleteButton);
 
-    // リストに追加
     memoList.appendChild(card);
   });
 }
