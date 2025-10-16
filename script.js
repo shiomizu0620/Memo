@@ -68,8 +68,11 @@ function showMemos() {
     return;
   }
 
-  // メモを1つずつ表示
-  memos.forEach(function(memo) {
+// ↓ ここを修正！ slice(0, 3) で配列の先頭から3つだけ取得する
+  const recentMemos = memos.slice(0, 3);
+
+  // 3つのメモを1つずつ表示
+  recentMemos.forEach(function(memo) {
     // メモカードを作る
     const card = document.createElement('div');
     card.className = 'memo-card';
