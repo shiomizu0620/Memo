@@ -20,38 +20,63 @@ loadMemos();
 showMemos();
 
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-//  4. 保存ボタンを押したときの処理（画像ヒント機能付き）
+//  4. 保存ボタンを押したときの処理（改良版：適用可能なルールのみ抽選）
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 saveButton.addEventListener('click', function() {
 
-  // --- 変換ルールのリスト（画像パスを追加） ---
+  // --- 変換ルールのリスト（変更なし） ---
   const transformations = [
     { name: 'あ→る',   transform: (text) => text.replaceAll('あ', 'る'), image: 'images/agemono.png' },
     { name: 'たぬき',   transform: (text) => text.replaceAll('た', ''),   image: 'images/tanuki.png' },
-    
+    { name: 'い抜き',   transform: (text) => text.replaceAll('い', ''),   image: 'images/no-i.png' },
+    { name: '母音抜き', transform: (text) => text.replace(/[あいうえお]/g, ''), image: 'images/vowel.png' }
   ];
 
-  // --- ランダムに1つの変換ルールを選ぶ ---
-  const randomIndex = Math.floor(Math.random() * transformations.length);
-  const selectedTransformation = transformations[randomIndex];
+  // ★ 1. まずユーザーの入力を取得する
+  const originalTitle = memoTitle.value;
+  const originalContent = memoContent.value;
+  const combinedInput = originalTitle + originalContent; // タイトルと内容を結合してチェックしやすくする
 
-  // --- ユーザーの入力を取得 & 変換 ---
-  let title = selectedTransformation.transform(memoTitle.value);
-  let content = selectedTransformation.transform(memoContent.value);
+  // ★ 2. 入力された文字に「適用可能」なルールだけを絞り込む
+  const applicableTransformations = transformations.filter(rule => {
+    // 変換を試してみて、元のテキストと変化があるかチェックする
+    return rule.transform(combinedInput) !== combinedInput;
+  });
 
+  let selectedTransformation;
+
+  // ★ 3. 適用可能なルールがある場合のみ、ランダムに選ぶ
+  if (applicableTransformations.length > 0) {
+    const randomIndex = Math.floor(Math.random() * applicableTransformations.length);
+    selectedTransformation = applicableTransformations[randomIndex];
+  } else {
+    // どのルールも適用できない場合、変換しない（そのまま保存）
+    selectedTransformation = {
+      name: '変換なし',
+      transform: (text) => text,
+      image: null
+    };
+  }
+
+  // ★ 4. 選ばれたルールで文字を変換
+  const title = selectedTransformation.transform(originalTitle);
+  const content = selectedTransformation.transform(originalContent);
   // --- 以下、保存処理 ---
   if (content === '') {
     alert('メモの内容を入力してください');
     return;
-  }
+  } 
 
+  // ★★★★★ ここからが重要 ★★★★★
   const newMemo = {
     id: Date.now(),
-    title: title || '無題', // テキストのヒントは削除
+    title: title || '無題',
     content: content,
+    originalContent: originalContent, // ★変換前の内容を保存
     date: new Date().toLocaleString('ja-JP'),
-    image: selectedTransformation.image // ★画像パスをメモに保存
+    image: selectedTransformation.image
   };
+  // ★★★★★ ここまで ★★★★★
 
   memos.unshift(newMemo);
   saveMemos();
@@ -126,10 +151,33 @@ function showMemos() {
     }
     // ★★★★★ ここまで追加 ★★★★★
 
+    // ★★★★★ ここからクイズ機能を追加 ★★★★★
+    const quizArea = document.createElement('div');
+    quizArea.className = 'quiz-area';
+
+    const answerInput = document.createElement('input');
+    answerInput.type = 'text';
+    answerInput.placeholder = '元の言葉は？';
+
+    const checkButton = document.createElement('button');
+    checkButton.textContent = '答え合わせ';
+    checkButton.addEventListener('click', function() {
+      if (answerInput.value === memo.originalContent) {
+        alert('正解です！🎉');
+      } else {
+        alert('残念！正解は「' + memo.originalContent + '」でした。');
+      }
+    });
+
+    quizArea.appendChild(answerInput);
+    quizArea.appendChild(checkButton);
+    // ★★★★★ ここまで ★★★★★
+
     // カードに要素を追加
     card.appendChild(titleElement);
     card.appendChild(contentElement);
     card.appendChild(dateElement);
+    card.appendChild(quizArea); // ★クイズエリアをカードに追加
     card.appendChild(deleteButton);
 
     // リストに追加
